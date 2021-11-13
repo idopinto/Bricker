@@ -8,9 +8,9 @@ import danogl.util.Vector2;
 import java.awt.event.KeyEvent;
 import java.util.Vector;
 
-public class UserPaddle extends GameObject {
+public class Paddle extends GameObject {
 
-    private static final float MOVEMENT_SPEED = 300;
+    private static final float MOVEMENT_SPEED = 400;
     private static final int MIN_DISTANCE_FROM_SCREEN_EDGE = 10;
 
     private UserInputListener inputListener;
@@ -57,7 +57,7 @@ public class UserPaddle extends GameObject {
      * @param renderable    The renderable representing the object. Can be null, in which case
      * @param inputListener
      */
-    public UserPaddle(Vector2 topLeftCorner, Vector2 dimensions, Renderable renderable, UserInputListener inputListener, float windowWidth) {
+    public Paddle(Vector2 topLeftCorner, Vector2 dimensions, Renderable renderable, UserInputListener inputListener, float windowWidth) {
         super(topLeftCorner, dimensions, renderable);
         this.inputListener = inputListener;
         this.windowWidth = windowWidth;
