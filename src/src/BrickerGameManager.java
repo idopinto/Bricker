@@ -7,7 +7,6 @@ import danogl.components.CoordinateSpace;
 import danogl.gui.*;
 import danogl.gui.rendering.RectangleRenderable;
 import danogl.gui.rendering.Renderable;
-import danogl.gui.rendering.TextRenderable;
 import danogl.util.Counter;
 import danogl.util.Vector2;
 import src.brick_strategies.CollisionStrategy;
@@ -131,17 +130,6 @@ public class BrickerGameManager extends GameManager {
         }
     }
 
-//    private void createHearts(ImageReader imageReader, Vector2 windowDimensions){
-//        Renderable heartImage = imageReader.readImage("assets/heart.png", true);
-//
-//        for (int i = 0; i < NUM_OF_LIVES; i++) {
-//            GameObject heart = new GameObject(new Vector2(windowDimensions.x()-((i+1) * 50 + HEARTS_DIFF ),windowDimensions.y() - 40),new Vector2(HEART_SIZE,HEART_SIZE),heartImage);
-//            this.heartsArray[i] = heart;
-//            this.gameObjects().addGameObject(heart, Layer.BACKGROUND);
-//            this.lifeCounter.increment();
-//            System.out.println(this.lifeCounter.value());
-//        }
-//    }
 
     /*  This method */
     private void initializeBackground(Vector2 windowDimensions, ImageReader imageReader) {
