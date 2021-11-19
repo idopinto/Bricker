@@ -1,14 +1,16 @@
-package bricker.gameobjects;
+package src.gameobjects;
 
-import bricker.brick_strategies.CollisionStrategy;
+import src.brick_strategies.CollisionStrategy;
 import danogl.GameObject;
 import danogl.collisions.Collision;
 import danogl.gui.rendering.Renderable;
 import danogl.util.Vector2;
+import danogl.util.Counter;
 
 public class Brick extends GameObject {
 
     private CollisionStrategy collisionStrategy;
+    private Counter brickCounter;
 
     /**
      * Construct a new GameObject instance.
@@ -18,15 +20,16 @@ public class Brick extends GameObject {
      * @param dimensions    Width and height in window coordinates.
      * @param renderable    The renderable representing the object. Can be null, in which case
      */
-    public Brick(Vector2 topLeftCorner, Vector2 dimensions, Renderable renderable, CollisionStrategy collisionStrategy) {
+    public Brick(Vector2 topLeftCorner, Vector2 dimensions, Renderable renderable, CollisionStrategy collisionStrategy,Counter brickCounter) {
         super(topLeftCorner, dimensions, renderable);
         this.collisionStrategy = collisionStrategy;
+        this.brickCounter = brickCounter;
     }
 
     @Override
     public void onCollisionEnter(GameObject other, Collision collision) {
         super.onCollisionEnter(other, collision);
-        this.collisionStrategy.onCollision(this,other);
+        this.collisionStrategy.onCollision(this,other,this.brickCounter);
     }
 
 }
