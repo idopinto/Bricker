@@ -9,7 +9,9 @@ import danogl.gui.rendering.RectangleRenderable;
 import danogl.gui.rendering.Renderable;
 import danogl.util.Counter;
 import danogl.util.Vector2;
+import src.brick_strategies.BrickStrategyFactory;
 import src.brick_strategies.CollisionStrategy;
+import src.brick_strategies.RemoveBrickStrategy;
 import src.gameobjects.*;
 
 import java.awt.*;
@@ -44,7 +46,8 @@ public class BrickerGameManager extends GameManager {
     private WindowController windowController;
     private Counter brickCounter;
     private Counter lifeCounter;
-    private static final int HEART_SIZE= 25;
+    private static final int HEART_SIZE = 25;
+
     BrickerGameManager(String windowTitle, Vector2 windowDimensions) {
         super(windowTitle, windowDimensions);
     }
@@ -53,22 +56,20 @@ public class BrickerGameManager extends GameManager {
     /**
      * Calling this function should initialize the game window. It should initialize objects in the game window - ball, paddle, walls, life counters, bricks.
      * This version of the game has 5 rows, 8 columns of bricks.
-     * @param imageReader - an ImageReader instance for reading images from files for rendering of objects.
-     * @param soundReader - a SoundReader instance for reading sound clips from files for rendering event sounds.
-     * @param inputListener - an InputListener instance for reading user input.
+     *
+     * @param imageReader      - an ImageReader instance for reading images from files for rendering of objects.
+     * @param soundReader      - a SoundReader instance for reading sound clips from files for rendering event sounds.
+     * @param inputListener    - an InputListener instance for reading user input.
      * @param windowController - controls visual rendering of the game window and object renderables.
      */
     @Override
     public void initializeGame(ImageReader imageReader, SoundReader soundReader, UserInputListener inputListener, WindowController windowController) {
         super.initializeGame(imageReader, soundReader, inputListener, windowController);
         this.windowController = windowController;
-        this.brickCounter = new Counter();
-        this.lifeCounter = new Counter(NUM_OF_LIVES);
-        windowDimensions = windowController.getWindowDimensions();
+        this.windowDimensions = windowController.getWindowDimensions();
 
         initializeBackground(windowDimensions, imageReader);
         createLifeCounters(imageReader);
-
         createBricks(imageReader, windowDimensions);
 
         createBall(imageReader, soundReader, windowDimensions);
@@ -76,29 +77,10 @@ public class BrickerGameManager extends GameManager {
         createBorders(windowDimensions);
     }
 
-    private void createLifeCounters(ImageReader imageReader) {
-        NumericLifeCounter numericLifeCounter = getNumericLifeCounter();
-        gameObjects().addGameObject(numericLifeCounter,Layer.BACKGROUND);
-        GraphicLifeCounter graphicLifeCounter = getGraphicLifeCounter(imageReader);
-        gameObjects().addGameObject(graphicLifeCounter,Layer.BACKGROUND);
-    }
-
-    private NumericLifeCounter getNumericLifeCounter() {
-
-        Vector2 textPosition = new Vector2(BORDER_WIDTH + BRICKS_DIFF, windowDimensions.y() - 4 * BORDER_WIDTH) ;
-        Vector2 textDimensions = new Vector2(HEART_SIZE,HEART_SIZE);
-        return new NumericLifeCounter(this.lifeCounter, textPosition, textDimensions, gameObjects());
-    }
-
-    private GraphicLifeCounter getGraphicLifeCounter(ImageReader imageReader) {
-        Renderable heartImage = imageReader.readImage("assets/heart.png", true);
-        Vector2 widgetStartPosition = new Vector2(BORDER_WIDTH + BRICKS_DIFF, windowDimensions.y() - 2 * BORDER_WIDTH) ;
-        Vector2 widgetDimensions = new Vector2(HEART_SIZE,HEART_SIZE);
-        return new GraphicLifeCounter(widgetStartPosition,widgetDimensions, this.lifeCounter,heartImage,gameObjects(),NUM_OF_LIVES);
-    }
 
     /**
      * Code in this function is run every frame update.
+     *
      * @param deltaTime -  time between updates. For internal use by game engine. You do not need to call this method yourself.
      */
     @Override
@@ -108,11 +90,10 @@ public class BrickerGameManager extends GameManager {
         String prompt = "";
         if (ballHeight > windowDimensions.y()) {
             this.lifeCounter.decrement();
-            if (this.lifeCounter.value() > 0){
+            if (this.lifeCounter.value() > 0) {
                 this.ball.setVelocity(reflectVelocityVectorRandomly());
                 this.ball.setCenter(windowDimensions.mult(0.5f));
-            }
-            else if (this.lifeCounter.value() == 0) {
+            } else if (this.lifeCounter.value() == 0) {
                 prompt = "You Lose!";
             }
 
@@ -142,7 +123,7 @@ public class BrickerGameManager extends GameManager {
     private void createBorders(Vector2 windowDimensions) {
         GameObject leftBorder = new GameObject(Vector2.ZERO, new Vector2(BORDER_WIDTH, windowDimensions.y()), new RectangleRenderable(BORDER_COLOR));
         GameObject rightBorder = new GameObject(new Vector2(windowDimensions.x() - BORDER_WIDTH, 0), new Vector2(BORDER_WIDTH, windowDimensions.y()), new RectangleRenderable(BORDER_COLOR));
-        GameObject topBorder = new GameObject(Vector2.ZERO, new Vector2(windowDimensions.x(),(float) BORDER_WIDTH), new RectangleRenderable(BORDER_COLOR));
+        GameObject topBorder = new GameObject(Vector2.ZERO, new Vector2(windowDimensions.x(), (float) BORDER_WIDTH), new RectangleRenderable(BORDER_COLOR));
         this.gameObjects().addGameObject(rightBorder);
         this.gameObjects().addGameObject(leftBorder);
         this.gameObjects().addGameObject(topBorder);
@@ -162,14 +143,16 @@ public class BrickerGameManager extends GameManager {
     /*  This method */
     private void createBricks(ImageReader imageReader, Vector2 windowDimensions) {
         Renderable brickImage = imageReader.readImage("assets/brick.png", false);
-        CollisionStrategy collisionStrategy = new CollisionStrategy(gameObjects());
+
+        BrickStrategyFactory brickStrategyFactory = new BrickStrategyFactory(gameObjects());
+        CollisionStrategy collisionStrategy = brickStrategyFactory.getStrategy();
 
         float brickWidth = (windowDimensions.x() - 2 * (BORDER_WIDTH + BORDER_BRICK_DIFF) - COLS * (BRICKS_DIFF)) / COLS;
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLS; j++) {
                 Vector2 brickPosition = new Vector2(BORDER_WIDTH + BORDER_BRICK_DIFF + j * (brickWidth + BRICKS_DIFF), BORDER_WIDTH + BORDER_BRICK_DIFF + i * (BRICK_HEIGHT + BRICKS_DIFF));
                 Vector2 brickDimensions = new Vector2(brickWidth, BRICK_HEIGHT);
-                GameObject brick = new Brick(brickPosition, brickDimensions, brickImage, collisionStrategy,this.brickCounter);
+                GameObject brick = new Brick(brickPosition, brickDimensions, brickImage, collisionStrategy, this.brickCounter);
                 this.gameObjects().addGameObject(brick, Layer.STATIC_OBJECTS);
                 this.brickCounter.increment();
             }
@@ -181,7 +164,7 @@ public class BrickerGameManager extends GameManager {
         Renderable paddleImage = imageReader.readImage("assets/paddle.png", true);
 
         // create user paddle
-        GameObject userPaddle = new Paddle(Vector2.ZERO, new Vector2(PADDLE_WIDTH, PADDLE_HEIGHT), paddleImage, inputListener, windowDimensions,MIN_DISTANCE_FROM_SCREEN_EDGE);
+        GameObject userPaddle = new Paddle(Vector2.ZERO, new Vector2(PADDLE_WIDTH, PADDLE_HEIGHT), paddleImage, inputListener, windowDimensions, MIN_DISTANCE_FROM_SCREEN_EDGE);
         userPaddle.setCenter(new Vector2(windowDimensions.x() / 2, (int) windowDimensions.y() - 30));
         this.gameObjects().addGameObject(userPaddle);
 
@@ -200,8 +183,28 @@ public class BrickerGameManager extends GameManager {
         return new Vector2(ballVelX, ballVelY);
     }
 
+    private NumericLifeCounter getNumericLifeCounter() {
 
+        Vector2 textPosition = new Vector2(BORDER_WIDTH + BRICKS_DIFF, windowDimensions.y() - 4 * BORDER_WIDTH);
+        Vector2 textDimensions = new Vector2(HEART_SIZE, HEART_SIZE);
+        return new NumericLifeCounter(this.lifeCounter, textPosition, textDimensions, gameObjects());
+    }
 
+    private GraphicLifeCounter getGraphicLifeCounter(ImageReader imageReader) {
+        Renderable heartImage = imageReader.readImage("assets/heart.png", true);
+        Vector2 widgetStartPosition = new Vector2(BORDER_WIDTH + BRICKS_DIFF, windowDimensions.y() - 2 * BORDER_WIDTH);
+        Vector2 widgetDimensions = new Vector2(HEART_SIZE, HEART_SIZE);
+        return new GraphicLifeCounter(widgetStartPosition, widgetDimensions, this.lifeCounter, heartImage, gameObjects(), NUM_OF_LIVES);
+    }
+
+    private void createLifeCounters(ImageReader imageReader) {
+        this.brickCounter = new Counter();
+        this.lifeCounter = new Counter(NUM_OF_LIVES);
+        NumericLifeCounter numericLifeCounter = getNumericLifeCounter();
+        gameObjects().addGameObject(numericLifeCounter, Layer.BACKGROUND);
+        GraphicLifeCounter graphicLifeCounter = getGraphicLifeCounter(imageReader);
+        gameObjects().addGameObject(graphicLifeCounter, Layer.BACKGROUND);
+    }
 
     /* Entry point for game.
         Should contain:

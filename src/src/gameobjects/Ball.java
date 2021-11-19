@@ -8,6 +8,7 @@ import danogl.util.Vector2;
 
 public class Ball extends GameObject {
     private final Sound collisionSound;
+    private int collisionCounter;
 
     /**
      * Construct a new GameObject instance.
@@ -20,14 +21,27 @@ public class Ball extends GameObject {
     public Ball(Vector2 topLeftCorner, Vector2 dimensions, Renderable renderable, Sound collisionSound) {
         super(topLeftCorner, dimensions, renderable);
         this.collisionSound = collisionSound;
+        this.collisionCounter = 0;
     }
 
     @Override
     public void onCollisionEnter(GameObject other, Collision collision) {
         super.onCollisionEnter(other, collision);
         setVelocity(getVelocity().flipped(collision.getNormal()));
-        collisionSound.play();
+        this.collisionSound.play();
+        this.collisionCounter++;
 
 
     }
+
+    /**
+     * Ball object maintains a counter which keeps count of collisions from start of game.
+     * This getter method allows access to the collision count in case any behavior
+     * should need to be based on number of ball collisions.
+     * @return number of times ball collided with an object since start of game.
+     */
+    public int getCollisionCount(){
+        return this.collisionCounter;
+    }
+
 }
