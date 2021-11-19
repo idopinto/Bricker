@@ -19,4 +19,9 @@ public class RemoveBrickStrategy implements CollisionStrategy{
         this.gameObjects.removeGameObject(thisObj,Layer.STATIC_OBJECTS);
         brickCounter.decrement();
     }
+
+    @Override
+    public GameObjectCollection getGameObjectCollection() {
+        return this.gameObjects;
+    }
 }
