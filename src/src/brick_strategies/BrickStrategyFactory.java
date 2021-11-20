@@ -1,17 +1,55 @@
 package src.brick_strategies;
-
 import danogl.collisions.GameObjectCollection;
+import danogl.gui.*;
+import danogl.util.*;
+import src.*;
+import src.gameobjects.Paddle;
+
+import java.util.Random;
 
 public class BrickStrategyFactory {
-    private final GameObjectCollection gameObjects;
 
-    public BrickStrategyFactory(GameObjectCollection gameObjects){
-        this.gameObjects = gameObjects;
+    private  GameObjectCollection gameObjects;
+    private BrickerGameManager gameManager;
+    private ImageReader imageReader;
+    private SoundReader soundReader;
+    private UserInputListener inputListener;
+    private WindowController windowController;
+    private Vector2 windowDimensions;
+
+    public BrickStrategyFactory(GameObjectCollection gameObjectCollection,
+                                 BrickerGameManager gameManager,
+                                 ImageReader imageReader,
+                                 SoundReader soundReader,
+                                 UserInputListener inputListener,
+                                 WindowController windowController,
+                                 Vector2 windowDimensions)
+    {
+        this.gameObjects = gameObjectCollection;
+        this.gameManager = gameManager;
+        this.imageReader = imageReader;
+        this.soundReader = soundReader;
+        this.inputListener = inputListener;
+        this.windowController = windowController;
+        this.windowDimensions = windowDimensions;
 
     }
 
     public CollisionStrategy getStrategy(){
         // Choose randomly between the possible brick strategies
-        return new RemoveBrickStrategy(this.gameObjects);
+        RemoveBrickStrategy removeBrickStrategy = new RemoveBrickStrategy(this.gameObjects);
+//        Random random = new Random();
+//        RemoveBrickStrategyDecorator strategy;
+//        int x = random.nextInt(10);
+//        if (x > 5){
+//            strategy = new AddPaddleStrategy(removeBrickStrategy,this.imageReader,this.inputListener,this.windowDimensions);
+//        }
+//
+//        else {
+//            strategy = new PuckStrategy(removeBrickStrategy,this.imageReader,this.soundReader);
+//        }
+        return new AddPaddleStrategy(removeBrickStrategy,this.imageReader,this.inputListener,this.windowDimensions);
+//
+//        return new AddPaddleStrategy(removeBrickStrategy,this.imageReader,this.inputListener,this.windowDimensions);
     }
 }

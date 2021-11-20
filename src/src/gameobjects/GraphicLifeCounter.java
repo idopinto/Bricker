@@ -14,7 +14,7 @@ import java.sql.Array;
  */
 public class GraphicLifeCounter extends GameObject {
     private  Counter livesCounter;
-    private final GameObjectCollection gameObjectCollection;
+    private  GameObjectCollection gameObjectCollection;
 
     private int numOfLives;
     private GameObject[] livesArray;

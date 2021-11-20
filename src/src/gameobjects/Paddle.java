@@ -14,9 +14,25 @@ public class Paddle extends GameObject {
 
     /* Fields */
     private static final float MOVEMENT_SPEED = 400;
-    private final Vector2 windowDimensions;
-    private final int minDistanceFromEdge;
-    private final UserInputListener inputListener;
+    private Vector2 windowDimensions;
+    private int minDistanceFromEdge;
+    private UserInputListener inputListener;
+
+
+    /**
+     * Construct a new GameObject instance.
+     *  @param topLeftCorner Position of the object, in window coordinates (pixels).
+     *                      Note that (0,0) is the top-left corner of the window.
+     * @param dimensions    Width and height in window coordinates.
+     * @param renderable    The renderable representing the object. Can be null, in which case
+     * @param inputListener
+     */
+    public Paddle(Vector2 topLeftCorner, Vector2 dimensions, Renderable renderable, UserInputListener inputListener,Vector2 windowDimensions,int minDistanceFromEdge) {
+        super(topLeftCorner, dimensions, renderable);
+        this.inputListener = inputListener;
+        this.minDistanceFromEdge = minDistanceFromEdge;
+        this.windowDimensions =  windowDimensions;
+    }
 
     @Override
     public void update(float deltaTime) {
@@ -50,19 +66,5 @@ public class Paddle extends GameObject {
             movementDirection = movementDirection.add(Vector2.RIGHT);
         }
         return movementDirection;
-    }
-    /**
-     * Construct a new GameObject instance.
-     *  @param topLeftCorner Position of the object, in window coordinates (pixels).
-     *                      Note that (0,0) is the top-left corner of the window.
-     * @param dimensions    Width and height in window coordinates.
-     * @param renderable    The renderable representing the object. Can be null, in which case
-     * @param inputListener
-     */
-    public Paddle(Vector2 topLeftCorner, Vector2 dimensions, Renderable renderable, UserInputListener inputListener,Vector2 windowDimensions,int minDistanceFromEdge) {
-        super(topLeftCorner, dimensions, renderable);
-        this.inputListener = inputListener;
-        this.minDistanceFromEdge = minDistanceFromEdge;
-        this.windowDimensions =  windowDimensions;
     }
 }

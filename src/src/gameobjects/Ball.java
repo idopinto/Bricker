@@ -7,7 +7,7 @@ import danogl.gui.rendering.Renderable;
 import danogl.util.Vector2;
 
 public class Ball extends GameObject {
-    private final Sound collisionSound;
+    private  Sound collisionSound;
     private int collisionCounter;
 
     /**
@@ -30,8 +30,6 @@ public class Ball extends GameObject {
         setVelocity(getVelocity().flipped(collision.getNormal()));
         this.collisionSound.play();
         this.collisionCounter++;
-
-
     }
 
     /**
