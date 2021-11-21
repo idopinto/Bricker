@@ -38,18 +38,24 @@ public class BrickStrategyFactory {
     public CollisionStrategy getStrategy(){
         // Choose randomly between the possible brick strategies
         RemoveBrickStrategy removeBrickStrategy = new RemoveBrickStrategy(this.gameObjects);
-//        Random random = new Random();
-//        RemoveBrickStrategyDecorator strategy;
-//        int x = random.nextInt(10);
-//        if (x > 5){
-//            strategy = new AddPaddleStrategy(removeBrickStrategy,this.imageReader,this.inputListener,this.windowDimensions);
-//        }
-//
-//        else {
-//            strategy = new PuckStrategy(removeBrickStrategy,this.imageReader,this.soundReader);
-//        }
-        return new AddPaddleStrategy(removeBrickStrategy,this.imageReader,this.inputListener,this.windowDimensions);
-//
-//        return new AddPaddleStrategy(removeBrickStrategy,this.imageReader,this.inputListener,this.windowDimensions);
+        Random random = new Random();
+        CollisionStrategy strategy = removeBrickStrategy;
+        int x = random.nextInt(5);
+        if (x == 0)
+        {
+            strategy = new PuckStrategy(removeBrickStrategy,this.imageReader,this.soundReader);
+        }
+        if (x == 1)
+        {
+            strategy = new ChangeCameraStrategy(removeBrickStrategy,this.windowController,this.gameManager);
+        }
+        if (x == 2)
+        {
+            strategy = new AddPaddleStrategy(removeBrickStrategy,this.imageReader,this.inputListener,this.windowDimensions);
+        }
+        if (x == 3)
+            strategy = new WidePaddleStrategy(removeBrickStrategy,this.imageReader,this.windowDimensions);
+        return strategy;
+//        return new WidePaddleStrategy(removeBrickStrategy,this.imageReader);
     }
 }

@@ -38,7 +38,10 @@ public class AddPaddleStrategy extends RemoveBrickStrategyDecorator{
     @Override
     public void onCollision(GameObject thisObj, GameObject otherObj, Counter brickCounter) {
         super.onCollision(thisObj, otherObj, brickCounter);
-        createMockPaddle();
+        if (!MockPaddle.isInstantiated){
+            createMockPaddle();
+        }
+
     }
 
     private void createMockPaddle() {

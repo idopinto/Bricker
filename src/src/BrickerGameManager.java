@@ -65,7 +65,8 @@ public class BrickerGameManager extends GameManager {
         super.initializeGame(imageReader, soundReader, inputListener, windowController);
 
         this.windowController = windowController;
-        this.windowController.setTimeScale(0.5f);
+//        this.windowController.setTargetFramerate(90);
+//        this.windowController.setTimeScale(0.5f);
         this.windowDimensions = windowController.getWindowDimensions();
 
         initializeBackground(windowDimensions, imageReader);
@@ -97,7 +98,7 @@ public class BrickerGameManager extends GameManager {
                 prompt = "You Lose!";
             }
 
-        } else if (this.brickCounter.value() == 0) {
+        } else if (this.brickCounter.value() <= 0) {
             prompt = "You Win!";
         }
 

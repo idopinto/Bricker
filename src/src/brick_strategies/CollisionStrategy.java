@@ -10,5 +10,4 @@ import danogl.util.Counter;
 public interface CollisionStrategy {
      void onCollision(GameObject thisObj, GameObject otherObj, Counter brickCounter);
      GameObjectCollection getGameObjectCollection();
-
 }

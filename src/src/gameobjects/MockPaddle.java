@@ -40,6 +40,7 @@ public class MockPaddle extends Paddle{
         this.numCollisionsToDisappear = numCollisionsToDisappear;
         this.minDistanceFromEdge = minDistanceFromEdge;
         this.windowDimensions = windowDimensions;
+        isInstantiated = true;
     }
 
     @Override
@@ -50,24 +51,8 @@ public class MockPaddle extends Paddle{
         }
         else{
             this.gameObjects.removeGameObject(this);
+            isInstantiated = false;
         }
     }
 
-    @Override
-    public void update(float deltaTime) {
-        super.update(deltaTime);
-//        validateBoundriesForMockPaddle();
-    }
-
-//    private void validateBoundriesForMockPaddle(){
-//
-//        if ((minDistanceFromEdge > getTopLeftCorner().x()))
-//        {
-//            transform().setTopLeftCornerX(minDistanceFromEdge);
-//        }
-//        if ((getTopLeftCorner().x() > this.windowDimensions.x() - minDistanceFromEdge - getDimensions().x()))
-//        {
-//            transform().setTopLeftCornerX(this.windowDimensions.x() - minDistanceFromEdge - getDimensions().x());
-//        }
-//    }
 }
