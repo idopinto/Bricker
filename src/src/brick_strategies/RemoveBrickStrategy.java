@@ -16,9 +16,14 @@ public class RemoveBrickStrategy implements CollisionStrategy{
 
     @Override
     public void onCollision(GameObject thisObj, GameObject otherObj, Counter brickCounter) {
-        this.gameObjects.removeGameObject(thisObj,Layer.STATIC_OBJECTS);
-        brickCounter.decrement();
-        System.out.println(brickCounter.value());
+
+        if (this.gameObjects.removeGameObject(thisObj,Layer.STATIC_OBJECTS))
+        {
+            brickCounter.decrement();
+            System.out.println(brickCounter.value());
+
+        }
+
     }
 
     @Override

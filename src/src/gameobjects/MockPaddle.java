@@ -46,7 +46,7 @@ public class MockPaddle extends Paddle{
     @Override
     public void onCollisionEnter(GameObject other, Collision collision) {
         super.onCollisionEnter(other, collision);
-        if (this.numCollisionsToDisappear > 0){
+        if (this.numCollisionsToDisappear > 1){
             this.numCollisionsToDisappear--;
         }
         else{

@@ -20,6 +20,10 @@ public class AddPaddleStrategy extends RemoveBrickStrategyDecorator{
     private UserInputListener inputListener;
     private Vector2 windowDimensions;
     private static int  NUM_COLLISIONS_FOR_MOCK_PADDLE_DISAPPEARANCE = 3;
+    private static int MIN_DISTANCE_FROM_EDGE = 20;
+    private static int MOCK_PADDLE_HEIGHT = 15;
+    private static int MOCK_PADDLE_WIDTH= 100;
+
 
     /**
      * @param toBeDecorated - Collision strategy object to be decorated.
@@ -39,20 +43,19 @@ public class AddPaddleStrategy extends RemoveBrickStrategyDecorator{
     public void onCollision(GameObject thisObj, GameObject otherObj, Counter brickCounter) {
         super.onCollision(thisObj, otherObj, brickCounter);
         if (!MockPaddle.isInstantiated){
-            createMockPaddle();
+            createMockPaddle(thisObj);
         }
 
     }
 
-    private void createMockPaddle() {
+    private void createMockPaddle(GameObject thisObj) {
         Renderable paddleImage = imageReader.readImage("assets/paddle.png", true);
-        Random random = new Random();
-        int r = random.nextInt(100);
         // create mock paddle
-        MockPaddle mockPaddle = new MockPaddle(Vector2.ZERO, new Vector2(100, 15), paddleImage, inputListener,
-                windowDimensions,getGameObjectCollection(),20,NUM_COLLISIONS_FOR_MOCK_PADDLE_DISAPPEARANCE);
+        MockPaddle mockPaddle = new MockPaddle(Vector2.ZERO, new Vector2(MOCK_PADDLE_WIDTH, MOCK_PADDLE_HEIGHT),
+                                                paddleImage, inputListener,
+                windowDimensions,getGameObjectCollection(),MIN_DISTANCE_FROM_EDGE,NUM_COLLISIONS_FOR_MOCK_PADDLE_DISAPPEARANCE);
 
-        mockPaddle.setCenter(new Vector2(windowDimensions.x() / 2, (int) windowDimensions.y() - 40 - r));
+        mockPaddle.setCenter(new Vector2(thisObj.getCenter().x(), (int) (windowDimensions.y()/2)));
         this.getGameObjectCollection().addGameObject(mockPaddle);
     }
 

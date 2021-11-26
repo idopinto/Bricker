@@ -4,3 +4,51 @@ idopinto12
 a. ---
 
 b. ---
+
+a. My project structure is as follows:
+     1.Package src:
+        1.a GameManager <- BrickerGameManager (contains main function)
+            ---------------------------------
+            API -> BORDER_WIDTH constant
+                   initializeGame(), update() override
+            This class inherits GameManger properties and simply in charge of:
+                  * running the game in the main function.
+                  * initialization of game graphics and objects such as:
+                  * Background, borders, Graphical and numeric life counters,
+                  * paddle, bricks, ball.
+
+                  * handle game-loop (win and lose conditions)
+
+                *  I chose to implement this way according to Campus instructions.
+            ---------------------------------
+        2.Package gameobjects:
+        gameobjects package as it sound should includes every game object class
+                        in order to maintain clean ,organized and easy to update for future features.
+            2.a GameObject <- (Ball, Brick, Paddle)
+                ---------------------------------
+               * Ball, Brick, Paddle inherits from GameObject class from DanoGameLab
+               * and override update() and onCollisionEnter() methods.
+               * ( Brick override onCollisionEnter() method in order to apply collision strategy.)
+
+                ---------------------------------
+            2.b GameObject <- (GraphicLifeCounter, NumericLifeCounter)
+                ---------------------------------
+               * those objects are no different then (2.a) objects
+               * except they both reflect to the user how many lives left Graphically and numerically.
+               * so i conceptually group them together for serving similar purpose.
+                ---------------------------------
+
+        3.Package brick_strategies:
+            brick_strategies package as it sound includes every game strategy implementation
+            in order to maintain clean ,organized and easy to update for future features.
+
+            3.a Object <- CollisionStrategy
+                ---------------------------------
+                * I chose according to Campus instructions to implement strategy design pattern.
+                * this particular class encapsulates the implementation of
+                * how brick behaves on collision with other objects because now we have only one
+                * behavior but we want that in the future it will be easy to add new strategies
+                * without the need to reopen other classes besides this class.
+                ---------------------------------
+
+when I denote inheritance as ( superClass <- subClass)

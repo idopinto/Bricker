@@ -47,7 +47,7 @@ public class WidePaddleStrategy extends RemoveBrickStrategyDecorator{
 
         }
 
-        // create buff widget
+        // create status widget
         Status status = new Status(Vector2.ZERO, new Vector2(30, 30), statusImage,getGameObjectCollection() ,gameStatusType,this.windowDimensions);
         status.setCenter(thisObj.getCenter());
         status.setVelocity(Vector2.DOWN.mult(300));

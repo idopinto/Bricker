@@ -27,6 +27,8 @@ public class Status extends GameObject {
         this.gameStatusType = gameStatusType;
     }
 
+    // TODO Status size should be the same as brick 100 X 15
+    // TODO Status velocity should be 1.2 faster then ball velocity
     @Override
     public boolean shouldCollideWith(GameObject other) {
         super.shouldCollideWith(other);
@@ -44,21 +46,23 @@ public class Status extends GameObject {
 
     private void applyEffectOnPaddle(GameObject other) {
         Vector2 paddleDimensions = other.getDimensions();
-        if ((paddleDimensions.x() > 25) && (paddleDimensions.x() < windowDimensions.x() / 2))
-        {
-            switch (this.gameStatusType)
-            {
+            switch (this.gameStatusType) {
                 case WIDE:
-                    other.setDimensions(paddleDimensions.mult(2));
+                    if (paddleDimensions.x() < windowDimensions.x() / 2) {
+                        other.setDimensions(paddleDimensions.mult(2));
+                    }
                     break;
 
                 case NARROW:
-                    other.setDimensions(paddleDimensions.mult(0.5f));
+                    if (paddleDimensions.x() > 20)
+                    {
+                        other.setDimensions(paddleDimensions.mult(0.5f));
+                    }
                     break;
             }
         }
 
-    }
+
 
     @Override
     public void update(float deltaTime) {
