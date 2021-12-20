@@ -4,6 +4,11 @@ import danogl.GameObject;
 import danogl.collisions.GameObjectCollection;
 import danogl.util.Counter;
 
+/**
+ * Abstract decorator to add functionality to the remove brick strategy,
+ * following the decorator pattern. All strategy decorators should inherit from this class.
+ */
+
 public abstract class RemoveBrickStrategyDecorator implements CollisionStrategy{
 
     private CollisionStrategy toBeDecorated;
@@ -19,8 +24,8 @@ public abstract class RemoveBrickStrategyDecorator implements CollisionStrategy{
 
     /**
      * Should delegate to held Collision strategy object.
-     * @param thisObj
-     * @param otherObj
+     * @param thisObj brick object
+     * @param otherObj ball object
      * @param brickCounter  global brick counter
      */
     @Override

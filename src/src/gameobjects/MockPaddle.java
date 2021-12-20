@@ -22,9 +22,9 @@ public class MockPaddle extends Paddle{
      *                            Note that (0,0) is the top-left corner of the window.
      * @param dimensions          Width and height in window coordinates.
      * @param renderable          The renderable representing the object. Can be null, in which case
-     * @param inputListener
-     * @param windowDimensions
-     * @param minDistanceFromEdge
+     * @param inputListener       input listener
+     * @param windowDimensions    window dimensions
+     * @param minDistanceFromEdge border for paddle movement
      */
     public MockPaddle(danogl.util.Vector2 topLeftCorner,
                        danogl.util.Vector2 dimensions,

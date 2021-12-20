@@ -1,27 +1,55 @@
 idopinto12
 206483620   
 
-a. ---
-
-b. ---
+when I denote inheritance as ( superClass <- subClass)
 
 a. My project structure is as follows:
      1.Package src:
-        1.a GameManager <- BrickerGameManager (contains main function)
+            GameManager (DanoGameLab)
+                   |
+                   V
+           BrickerGameManager(contains main function)
+
+
+    2. Package gameobjects:
+                        GameManager (DanoGameLab)                           (enum) GameStatusTypes
+                                |
+    _________________________________________________________________________________________________
+    |         |         |        |                 |                    |                           |
+    Ball    Brick     Paddle   Status      GraphicLifeCounter   NumericLifeCounter      BallCollisionCountDownAgent
+    |                   |
+   Puck              MockPaddle
+
+
+   3.Package brick_strategies:
+        Structure of this package:
+        a.(interface) CollisionStrategy                 b. BrickStrategyFactory                    c.(enum) StrategyType
+                           |
+                           V
+            __________________________________________________
+            |                                                 |
+
+(Concrete Class)a.1 RemoveBrickStrategy    (abstract class) a.2 RemoveBrickStrategy
+                                                              |
+              __________________________________________________________________________________________________
+              |                     |                                    |                                      |
+        a.2.1 PuckStrategy      a.2.2 AddPaddleStrategy       a.2.3 ChangeCameraStrategy     a.2.4  WidePaddleStrategy
+
+
+
+    1.a GameManager <- BrickerGameManager (contains main function)
             ---------------------------------
-            API -> BORDER_WIDTH constant
-                   initializeGame(), update() override
             This class inherits GameManger properties and simply in charge of:
                   * running the game in the main function.
                   * initialization of game graphics and objects such as:
                   * Background, borders, Graphical and numeric life counters,
                   * paddle, bricks, ball.
-
                   * handle game-loop (win and lose conditions)
 
                 *  I chose to implement this way according to Campus instructions.
             ---------------------------------
-        2.Package gameobjects:
+
+   2.Package gameobjects:
         gameobjects package as it sound should includes every game object class
                         in order to maintain clean ,organized and easy to update for future features.
             2.a GameObject <- (Ball, Brick, Paddle)
@@ -37,18 +65,109 @@ a. My project structure is as follows:
                * except they both reflect to the user how many lives left Graphically and numerically.
                * so i conceptually group them together for serving similar purpose.
                 ---------------------------------
-
-        3.Package brick_strategies:
-            brick_strategies package as it sound includes every game strategy implementation
-            in order to maintain clean ,organized and easy to update for future features.
-
-            3.a Object <- CollisionStrategy
+            2.c GameObject <- (Puck, MockPaddle,Status)
                 ---------------------------------
-                * I chose according to Campus instructions to implement strategy design pattern.
-                * this particular class encapsulates the implementation of
-                * how brick behaves on collision with other objects because now we have only one
-                * behavior but we want that in the future it will be easy to add new strategies
-                * without the need to reopen other classes besides this class.
+               * those objects are additional to the basic game and used for implementing strategies.
                 ---------------------------------
 
-when I denote inheritance as ( superClass <- subClass)
+            2.d GameObject <- BallCollisionCountDownAgent
+                ---------------------------------
+               * this object is helper class in order to handle the ChangeCameraStrategy.
+                ---------------------------------
+
+
+        Explanation for design pattern choices:
+            Strategy design pattern:
+                    --------------------------------
+                    * I chose according to Campus instructions to implement strategy design pattern.
+                    * the reason is that this design pattern encapsulates the implementation of
+                    * how brick behaves on collision with other objects and it helps us to add new strategies easily
+                    * without the need to reopen other classes besides this class.
+                    ---------------------------------
+
+            Decorator design pattern:
+                    --------------------------------
+                    * I chose to implement Decorator design pattern according to course instructions.
+                    * The reason is that this design pattern helps us follow the Single Responsibility Principle.
+                     each one of (PuckStrategy ,AddPaddleStrategy, ChangeCameraStrategy, WidePaddleStrategy)
+                     is responsible for one main functionality (strategy).
+                    * In addition it helps us implement the Double\ Triple behaviors because with the decorator
+                    * we can take the default behavior (remove brick and decrement the counter)
+                    * and compose multiple strategies on top of it without the mess of inheritance.
+                    ---------------------------------
+
+            Factory design pattern:
+                    ---------------------------------
+                    * I chose to implement Factory design pattern in order to encapsulates how strategies being chosen.
+                    * It helps us follow the Single Responsibility Principle  because this is the only place in the code
+                    * which deals with this logic.
+                    * it makes it easy to modify the "how" without the need to change the API.
+                    ---------------------------------
+
+
+
+ algo part:
+        1. alotStudyTime:
+        greedy algorithm
+           the algorithm sort tasks and timeSlots in decreasing order
+           and the iterate over taskes from end to start.
+           each iteration it checks if task can fit time slot a.k.a (tasks[i] <= timeSlots[j])
+           if it can't, we continue to the next task (staying on the same time slot until fit)
+           if it can than we increase the result counter and moving on to the next task and time slot.
+           finally it returns the result counter.
+           sorting two arrays in different sizes costs O(nlogn) + O(mlogm) which means O(nlogn + mlogm) in the average case
+           and O(n^2 +m^2) in the worst case according to Arrays.sort documentation.
+           the inner loop costs constant time in average and o(n) in the worst case if for every i tasks[i] > timeslots[j]
+           the outer loop cost o(max(n,m)) in average.
+           so in total the Time complexity in average is -> O(nlogn + mlogm)
+
+        2. minLeap:
+        greedy algorithm
+              maxReach = leapNum[0] -> the maximum distance the frog can reach from the current leaf
+              counter = leapNum[0] -> count down from the current leaf value til 0
+              result = 0  -> the minimum amount of steps the frog need to do.
+
+             the algorithm iterate in loop from i=1 to n-1 and each iteration save the best step the frog can ma
+             starts with leapNum[0] as initial value and checks if  i + leapNum[i] is greater then maxReach.
+
+             each iteration the algorithm checks for the maximum between maxReach and i + leapNum[i] (the next leaf candidate value)
+             and decrease the counter. if counter == 0 then it means that we checked every leaf value the current leaf can reach.
+             and in maxReach we store the largest distance the frog can make so we increase the result by 1
+             and let counter =  maxReach - i so in fact we jumped to the next leaf and start this process again til we get to n.
+             In this greedy algorithm we always look 2 steps ahead so we indeed in the end of the algorithm
+             result stores the minimum amount of jumps the frog can make.
+
+             Time complexity -> iterates n times in for loop and doing constant time operation inside -> O(n)
+
+
+        3. bucketWalk
+        Dynamic programming
+            first let's divide the problem into sub-problems.
+            the algorithm keeps an array in size 48 s.t for every 0 <= i <= 48. buckets[i] contains
+                         'how many different ways can he fill the water trough with i liters of water capacity'
+            at each iteration there are two choices:
+            1. take 2 liters
+            2. take 1 liter.
+            so the if we sum the buckets[i - 2] problem with the buckets[i - 1] problem
+            we achieve the correct result for the i'th problem.
+            the base cases:
+              1,1,2 are the initial values of  buckets[0],buckets[1],buckets[2] respectively
+             because there is only one way to fill water trough that holds 0 liters of water. (empty set)
+             and there is only one way to fill water trough that holds 1 liters of water. ( single bucket once)
+             and there is two ways to fill  water trough that holds 1 liters of water. ( (1,1) , (2))
+
+             Time complexity -> iterating 'n' times in loop and do stuff in constant time. ends with O(n)
+
+        4. numTrees
+        Dynamic programming
+            Let numOfTrees[i] be the number of unique binary search trees for i.
+            The number of trees are determined by the number of subtrees which have different root node.
+            the array is modified in a way that in the end of the running numOftrees[n] contain the desired result.
+            the correctness of the algorithm rely on the recurrence formula of:
+                      for every 0 <= i <= N  Ci+1 = sum from 0<=j < i -> C[j]*C[i−j-1]
+
+            Time complexity -> nested for loop and constant time operation inside -> O(n^2)
+
+
+
+

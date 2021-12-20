@@ -63,7 +63,8 @@ public class BrickerGameManager extends GameManager {
 
 
     /**
-     * Calling this function should initialize the game window. It should initialize objects in the game window - ball, paddle, walls, life counters, bricks.
+     * Calling this function should initialize the game window. It should initialize objects in the game window - ball,
+     * paddle, walls, life counters, bricks.
      * This version of the game has 5 rows, 8 columns of bricks.
      *
      * @param imageReader      - an ImageReader instance for reading images from files for rendering of objects.

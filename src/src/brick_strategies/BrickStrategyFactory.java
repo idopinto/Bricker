@@ -3,22 +3,20 @@ import danogl.collisions.GameObjectCollection;
 import danogl.gui.*;
 import danogl.util.*;
 import src.*;
-import src.gameobjects.Paddle;
 
 import java.util.Random;
 
 public class BrickStrategyFactory {
-    private static  final int NUM_OF_STRATEGIES = 5;
     private static  final int MAX_STRATEGIES = 3;
 
 
-    private  GameObjectCollection gameObjects;
-    private BrickerGameManager gameManager;
-    private ImageReader imageReader;
-    private SoundReader soundReader;
-    private UserInputListener inputListener;
-    private WindowController windowController;
-    private Vector2 windowDimensions;
+    private final GameObjectCollection gameObjects;
+    private final BrickerGameManager gameManager;
+    private final ImageReader imageReader;
+    private final SoundReader soundReader;
+    private final UserInputListener inputListener;
+    private final WindowController windowController;
+    private final Vector2 windowDimensions;
 
     public BrickStrategyFactory(GameObjectCollection gameObjectCollection,
                                  BrickerGameManager gameManager,
@@ -42,36 +40,44 @@ public class BrickStrategyFactory {
         // Choose randomly between the possible brick strategies
 
         Random random = new Random();
-        int numberOfStrategies = random.nextInt(MAX_STRATEGIES);
+        int isDoubleStrategy = random.nextInt(6);
+        int maxStrategies =  MAX_STRATEGIES;
         CollisionStrategy removeBrickStrategy = new RemoveBrickStrategy(this.gameObjects);
+        if (isDoubleStrategy == StrategyType.DOUBLE_STRATEGY.getValue())
+        {
+            isDoubleStrategy = random.nextInt(5);
+            if (isDoubleStrategy != StrategyType.DOUBLE_STRATEGY.getValue())
+            {
+                maxStrategies = MAX_STRATEGIES -1;
+            }
 
-        for (int i = 0; i < numberOfStrategies; i++) {
-
-            removeBrickStrategy = this.selectStrategy(removeBrickStrategy,random);
+            for (int i = 0; i < maxStrategies; i++) {
+                removeBrickStrategy = this.selectStrategy(removeBrickStrategy,random.nextInt(4));
+            }
+        }
+        else
+        {
+            removeBrickStrategy = this.selectStrategy(removeBrickStrategy,random.nextInt(5));
         }
 
         return removeBrickStrategy;
     }
 
-    private CollisionStrategy selectStrategy(CollisionStrategy collisionStrategy,Random random)
+    private CollisionStrategy selectStrategy(CollisionStrategy collisionStrategy,int randomStrategy)
     {
-        int randomStrategy = random.nextInt(NUM_OF_STRATEGIES);
-//        int randomStrategy = 4;
-        if (randomStrategy != StrategyType.DEFAULT.getValue()) {
+        if (randomStrategy == StrategyType.ADD_PADDLE.getValue()) {
+            collisionStrategy = new AddPaddleStrategy(collisionStrategy, this.imageReader, this.inputListener,
+                                                                        this.windowDimensions);
+        }
+        if (randomStrategy == StrategyType.CHANGE_CAMERA.getValue()) {
+            collisionStrategy = new ChangeCameraStrategy(collisionStrategy, this.windowController, this.gameManager);
+        }
+        if (randomStrategy == StrategyType.PUCK.getValue()) {
+            collisionStrategy = new PuckStrategy(collisionStrategy, this.imageReader, this.soundReader);
 
-            if (randomStrategy == StrategyType.ADD_PADDLE.getValue()) {
-                collisionStrategy = new AddPaddleStrategy(collisionStrategy, this.imageReader, this.inputListener, this.windowDimensions);
-            }
-            if (randomStrategy == StrategyType.CHANGE_CAMERA.getValue()) {
-                collisionStrategy = new ChangeCameraStrategy(collisionStrategy, this.windowController, this.gameManager);
-            }
-            if (randomStrategy == StrategyType.PUCK.getValue()) {
-                collisionStrategy = new PuckStrategy(collisionStrategy, this.imageReader, this.soundReader);
-
-            }
-            if (randomStrategy == StrategyType.WIDE_PADDLE.getValue()) {
-                collisionStrategy = new WidePaddleStrategy(collisionStrategy, this.imageReader, this.windowDimensions);
-            }
+        }
+        if (randomStrategy == StrategyType.WIDE_PADDLE.getValue()) {
+            collisionStrategy = new WidePaddleStrategy(collisionStrategy, this.imageReader, this.windowDimensions);
         }
         return collisionStrategy;
     }

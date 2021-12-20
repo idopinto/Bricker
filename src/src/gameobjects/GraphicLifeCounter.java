@@ -7,17 +7,18 @@ import danogl.gui.rendering.Renderable;
 import danogl.util.Vector2;
 import danogl.util.Counter;
 
-import java.sql.Array;
 
 /**
  * Display a graphic object on the game window showing as many widgets as lives left.
  */
 public class GraphicLifeCounter extends GameObject {
-    private  Counter livesCounter;
-    private  GameObjectCollection gameObjectCollection;
-
+    private static final int HEARTS_DIFFERENCE = 50;
+    /* Class Fields */
+    private final GameObjectCollection gameObjectCollection;
+    private final Counter livesCounter;
+    private final GameObject[] livesArray;
     private int numOfLives;
-    private GameObject[] livesArray;
+
     /**
      * Construct a new GameObject instance.
      *
@@ -29,7 +30,8 @@ public class GraphicLifeCounter extends GameObject {
      * @param gameObjectCollection - global game object collection managed by game manage.
      * @param numOfLives - global setting of number of lives a player will have in a game.
      */
-    public GraphicLifeCounter(Vector2 topLeftCorner, Vector2 widgetDimensions,Counter livesCounter, Renderable renderable, GameObjectCollection gameObjectCollection,int numOfLives) {
+    public GraphicLifeCounter(Vector2 topLeftCorner, Vector2 widgetDimensions,Counter livesCounter,
+                              Renderable renderable, GameObjectCollection gameObjectCollection,int numOfLives) {
         super(topLeftCorner, widgetDimensions, renderable);
         this.livesCounter = livesCounter;
         this.gameObjectCollection = gameObjectCollection;
@@ -47,9 +49,10 @@ public class GraphicLifeCounter extends GameObject {
         }
     }
 
+    /* this method creates Graphical life Counter */
     private void createHearts(){
         for (int i = 0; i < this.livesArray.length; i++) {
-            Vector2 currentHeartVector = this.getTopLeftCorner().add(new Vector2(i * 50,0));
+            Vector2 currentHeartVector = this.getTopLeftCorner().add(new Vector2(i * HEARTS_DIFFERENCE,0));
             GameObject heart = new GameObject(currentHeartVector,this.getDimensions(),this.renderer().getRenderable());
             this.livesArray[i] = heart;
             this.gameObjectCollection.addGameObject(heart, Layer.BACKGROUND);

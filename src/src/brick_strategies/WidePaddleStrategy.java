@@ -11,8 +11,8 @@ import src.gameobjects.GameStatusTypes;
 import java.util.Random;
 
 public class WidePaddleStrategy extends RemoveBrickStrategyDecorator{
-    private ImageReader imageReader;
-    private Vector2 windowDimensions;
+    private final ImageReader imageReader;
+    private final Vector2 windowDimensions;
 
     /**
      * @param toBeDecorated - Collision strategy object to be decorated.
@@ -32,6 +32,8 @@ public class WidePaddleStrategy extends RemoveBrickStrategyDecorator{
         createWidenOrNarrowGameStatus(thisObj);
     }
 
+
+    /* this method get brick object and create GameStatus instead of the brick being removed.*/
     private void createWidenOrNarrowGameStatus(GameObject thisObj) {
         Random random = new Random();
         GameStatusTypes gameStatusType;
@@ -46,11 +48,11 @@ public class WidePaddleStrategy extends RemoveBrickStrategyDecorator{
             statusImage = imageReader.readImage("assets/buffWiden.png", true);
 
         }
-
         // create status widget
-        Status status = new Status(Vector2.ZERO, new Vector2(30, 30), statusImage,getGameObjectCollection() ,gameStatusType,this.windowDimensions);
+        Status status = new Status(Vector2.ZERO, thisObj.getDimensions(), statusImage,getGameObjectCollection() ,
+                gameStatusType,this.windowDimensions);
         status.setCenter(thisObj.getCenter());
-        status.setVelocity(Vector2.DOWN.mult(300));
+        status.setVelocity(Vector2.DOWN.mult(360));
         this.getGameObjectCollection().addGameObject(status);
     }
 

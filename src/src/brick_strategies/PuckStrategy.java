@@ -12,11 +12,18 @@ import src.gameobjects.Puck;
 import java.util.Random;
 
 
+/**
+ * Concrete class extending abstract RemoveBrickStrategyDecorator.
+ * Introduces several pucks instead of brick once removed.
+ */
 public class PuckStrategy extends RemoveBrickStrategyDecorator {
+    /* Constants */
     private static final int NUM_OF_PUCKS = 3;
-    private static final float PUCK_SPEED = 360; /*TODO 20 % more or less then ball speed*/
-    private ImageReader imageReader;
-    private SoundReader soundReader;
+    private static final float PUCK_SPEED = 360;
+
+    /* Fields */
+    private final ImageReader imageReader;
+    private final SoundReader soundReader;
 
     /**
      * @param toBeDecorated - Collision strategy object to be decorated.
@@ -30,8 +37,8 @@ public class PuckStrategy extends RemoveBrickStrategyDecorator {
     /**
      * Add pucks to game on collision and delegate to held CollisionStrategy.
      *
-     * @param thisObj
-     * @param otherObj
+     * @param thisObj brick object
+     * @param otherObj ball object
      * @param brickCounter global brick counter
      */
     @Override
@@ -41,14 +48,15 @@ public class PuckStrategy extends RemoveBrickStrategyDecorator {
         createPucks(thisObj);
     }
 
+    /* this method creates 3 brand-new pucks instead of the brick */
     private void createPucks(GameObject brick) {
         Renderable puckImage = this.imageReader.readImage("assets/mockBall.png", true);
         Sound collisionSound = this.soundReader.readSound("assets/blop.wav");
-        Vector2 brickCenter = brick.getCenter();
-        Vector2 puckDimensions = new Vector2(brick.getDimensions().x()/3,brick.getDimensions().x()/3);
+        Vector2 puckDimensions = new Vector2(brick.getDimensions().x() / 3,brick.getDimensions().x() / 3);
         Vector2 puckVelocity = reflectVelocityVectorRandomlyPuck();
         for (int i = 0; i < NUM_OF_PUCKS; i++) {
-            Vector2 puckPosition = new Vector2(brick.getTopLeftCorner().x() + i * puckDimensions.x(), brick.getCenter().y());
+            Vector2 puckPosition = new Vector2(brick.getTopLeftCorner().x() + i * puckDimensions.x(),
+                                                        brick.getCenter().y());
             Puck puck = new Puck(puckPosition, puckDimensions, puckImage, collisionSound);
             puck.setVelocity(puckVelocity);
 

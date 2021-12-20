@@ -5,7 +5,9 @@ import danogl.util.Counter;
 import danogl.collisions.GameObjectCollection;
 import danogl.collisions.Layer;
 
-
+/**
+ * Concrete brick strategy implmenting CollisionStrategy interface. Removes holding brick on collision.
+ */
 public class RemoveBrickStrategy implements CollisionStrategy{
     private  GameObjectCollection gameObjects;
 

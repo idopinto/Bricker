@@ -9,8 +9,8 @@ import danogl.util.Counter;
 
 public class Brick extends GameObject {
 
-    private CollisionStrategy collisionStrategy;
-    private Counter brickCounter;
+    private final CollisionStrategy collisionStrategy;
+    private final Counter brickCounter;
 
     /**
      * Construct a new GameObject instance.

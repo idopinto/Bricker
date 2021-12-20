@@ -6,31 +6,32 @@ public class Solutions {
 
     /**
      * Method computing the maximal amount of tasks out of n tasks that can be completed with m time slots. A task can
-     * only be completed in a time slot if the length of the time slot is grater than the no. of hours needed to complete the task.
+     * only be completed in a time slot if the length of the time slot is grater than the
+     * no. of hours needed to complete the task.
      *
      * @param tasks     array of integers of length n. tasks[i] is the time in hours required to complete task i.
      * @param timeSlots array of integersof length m. timeSlots[i] is the length in hours of the slot i.
      * @return maximal amount of tasks that can be completed
      */
     public static int alotStudyTime(int[] tasks, int[] timeSlots) {
-        // Sort tasks and timeSlots in decreasing order
-        Arrays.sort(tasks);
-        Arrays.sort(timeSlots);
-
 
         var i = tasks.length - 1;
         var j = timeSlots.length - 1;
+
+        // Sort tasks and timeSlots in decreasing order
+        Arrays.sort(tasks);
+        Arrays.sort(timeSlots);
         var maxCounter = 0;
         // looping over tasks array from end to start
         while ((-1 < i) && (-1 < j)) {
             // checking restriction
             while (tasks[i] > timeSlots[j]) {
                 --i;
+                if (i < 0) {break;}
             }
-            i = checkRestriction(tasks, timeSlots, i, j);
 
             // assign task to time slot
-            if (tasks[i] <= timeSlots[j]) {
+            if ((i >= 0 ) && (tasks[i] <= timeSlots[j])) {
                 ++maxCounter;
                 --i;
                 --j;
@@ -38,14 +39,7 @@ public class Solutions {
 
         }
         return maxCounter;
-        // Time complexity ->  O(max(nlogn, mlogm))
-    }
-
-    private static int checkRestriction(int[] tasks, int[] timeSlots, int i, int j) {
-        while (tasks[i] > timeSlots[j]) {
-            --i;
-        }
-        return i;
+        // Time complexity ->  O(nlogn + mlogm)
     }
 
     /**
@@ -56,37 +50,51 @@ public class Solutions {
      * @param leapNum array of ints. leapNum[i] is how many leaves ahead you can jump from leaf i.
      * @return minimal no. of leaps to last leaf.
      */
+
     public static int minLeap(int[] leapNum)
     {
 
         var n = leapNum.length - 1;
-        int[] minLeaps = new int[n];
-        minLeaps[0]= 0;
-        for (int i = 1; i < n; i++) {
-            var min = n;
-            for (int j = 0; j < i; j++) {
-                if ((j + leapNum[j] >= i) && (minLeaps[j] + 1 < min)) {
-                    min = minLeaps[j] + 1;
-                }
-            }
-            minLeaps[i] = min;
+        if (n <= 1)
+        {
+            return 0;
         }
-        return minLeaps[n-1];
+
+        var maxReach = leapNum[0];
+        var counter = leapNum[0];
+        var result = 0;
+
+        for (int i = 1; i < n; i++) {
+            if (maxReach < i + leapNum[i])
+            {
+                maxReach = i + leapNum[i];
+            }
+            --counter;
+            if (counter == 0)
+            {
+                ++result;
+                counter = maxReach -  i;
+            }
+        }
+        return result + 1;
     }
 
 
     /**
-     * Method computing the solution to the following problem: A boy is filling the water trough for his father's cows in their village.
-     * The trough holds n liters of water. With every trip to the village well, he can return using either the 2 bucket yoke, or simply with a single bucket. A bucket holds 1 liter.
-     * In how many different ways can he fill the water trough? n can be assumed to be greater or equal to 0, less than or equal to 48.
+     * Method computing the solution to the following problem: A boy is filling the water trough for his father's
+     * cows in their village.
+     * The trough holds n liters of water. With every trip to the village well, he can return using either
+     * the 2 bucket yoke, or simply with a single bucket. A bucket holds 1 liter.
+     * In how many different ways can he fill the water trough? n can be assumed to be greater or equal to 0,
+     * less than or equal to 48.
      * @param n
-     * @returnvalid output of algorithm.
+     * @return valid output of algorithm.
      */
     public static int bucketWalk(int n)
     {
         // buckets[i] should contain the output of bucketWalk(i)
         int[] buckets = new int[48];
-        buckets[0] = 0;
+        buckets[0] = 1;
         buckets[1] = 1;
         buckets[2] = 2;
 
@@ -106,40 +114,16 @@ public class Solutions {
 
     public static int numTrees(int n)
     {
-        return 0;
-    }
-    public static void main(String[] args) {
-//        // test 1
-//        int[] tasks1 = {4, 3, 6, 2};
-//        int[] timeSlots1 = {5, 4};
-//        System.out.printf("got %d , expected 2", alotStudyTime(tasks1, timeSlots1));
-//        System.out.println("\n");
-//
-//
-//        // test 2
-//        int[] tasks2 = {5, 3, 9, 6, 5, 3, 8};
-//        int[] timeSlots2 = {8, 6, 2, 4, 5, 7, 1, 6};
-//        System.out.printf("got %d , expected 6", alotStudyTime(tasks2, timeSlots2));
-//        System.out.println("\n");
-//
-//        // test 3
-//
-//        int[] tasks3 = {1, 2};
-//        int[] timeSlots3 = {2, 1};
-//        System.out.printf("got %d , expected 2", alotStudyTime(tasks3, timeSlots3));
-//        System.out.println("\n");
-//
-//        // test 4
-//        int[] tasks4 = {76, 1, 4, 69, 40, 3, 5, 53, 79, 83};
-//        int[]meSlots4 = {92, 65, 64, 15, 58, 59, 13, 77, 72, 49};
-////        System.out.printf("got %d , expected 9", alotStudyTime(tasks4, timeSlots4));
-////        System.out.println("\n");
-//
-////        int[] leap = {3, 5, 7, 2, 4, 3, 3, 4, 1, 1};
-////        System.out.printf("got %d , expected 2", minLeap(leap));
-////        System.out.println("\n"); ti
-        System.out.printf("got %d , expected 89", bucketWalk(10));
-        System.out.println("\n");
+        int[] numOfTrees= new int[n+1];
+        if (n == 0){return 0;}
+        numOfTrees[0] = 1;
+        for (int i = 0; i <= n; i++) {
+            for (int j = 0; j < i; j++) {
+                numOfTrees[i] += numOfTrees[j] * numOfTrees[i-j-1];
+            }
+
+        }
+        return numOfTrees[n];
     }
 
 }

@@ -15,14 +15,16 @@ import src.gameobjects.Puck;
  * Changes camera focus from ground to ball until ball collides NUM_BALL_COLLISIONS_TO_TURN_OFF times.
  */
 public class ChangeCameraStrategy extends RemoveBrickStrategyDecorator {
+    /* Constants */
     private static final int NUM_BALL_COLLISIONS_TO_TURN_OFF = 4;
-    private WindowController windowController;
-    private BrickerGameManager gameManager;
+    /* Field */
+    private final WindowController windowController;
+    private final BrickerGameManager gameManager;
 
     /**
      * @param toBeDecorated    - Collision strategy object to be decorated.
-     * @param windowController
-     * @param gameManager
+     * @param windowController window controller
+     * @param gameManager game manager object
      */
 
     ChangeCameraStrategy(CollisionStrategy toBeDecorated, WindowController windowController, BrickerGameManager gameManager) {
@@ -32,30 +34,19 @@ public class ChangeCameraStrategy extends RemoveBrickStrategyDecorator {
 
     /**
      * Change camere position on collision and delegate to held CollisionStrategy.
-     * @param thisObj
-     * @param otherObj
+     * @param thisObj brick object
+     * @param otherObj  ball object
      * @param brickCounter  global brick counter
      */
     @Override
     public void onCollision(GameObject thisObj, GameObject otherObj, Counter brickCounter) {
         super.onCollision(thisObj, otherObj, brickCounter);
         if ((gameManager.getCamera() == null) && (!(otherObj instanceof Puck))){
-            turnOnCameraChange((Ball) otherObj); // TODO downcasting from GameObject to Ball
+            turnOnCameraChange((Ball) otherObj);
         }
     }
 
-    private void turnOnCameraChange(Ball ball)
-    {
-        Camera camera =  new Camera(ball, Vector2.ZERO,
-                                    windowController.getWindowDimensions().mult(1.2f),
-                                    windowController.getWindowDimensions());
-        gameManager.setCamera(camera);
-        BallCollisionCountdownAgent countDownAgent = new BallCollisionCountdownAgent(ball,
-                                                    this,
-                                            ball.getCollisionCount() + NUM_BALL_COLLISIONS_TO_TURN_OFF);
-        this.getGameObjectCollection().addGameObject(countDownAgent);
 
-    }
     /**
      * Return camera to normal ground position.
      */
@@ -64,5 +55,20 @@ public class ChangeCameraStrategy extends RemoveBrickStrategyDecorator {
         if (gameManager.getCamera() != null){
             gameManager.setCamera(null);
         }
+    }
+
+
+    /*this method turn on the camera change effect  */
+    private void turnOnCameraChange(Ball ball)
+    {
+        Camera camera =  new Camera(ball, Vector2.ZERO,
+                windowController.getWindowDimensions().mult(1.2f),
+                windowController.getWindowDimensions());
+        gameManager.setCamera(camera);
+        BallCollisionCountdownAgent countDownAgent = new BallCollisionCountdownAgent(ball,
+                this,
+                ball.getCollisionCount() + NUM_BALL_COLLISIONS_TO_TURN_OFF);
+        this.getGameObjectCollection().addGameObject(countDownAgent);
+
     }
 }

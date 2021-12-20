@@ -11,12 +11,13 @@ import java.awt.event.KeyEvent;
  * One of the main game objects. Repels the ball against the bricks.
  */
 public class Paddle extends GameObject {
+    /* Paddle constants */
+    private static final float MOVEMENT_SPEED = 400;
 
     /* Fields */
-    private static final float MOVEMENT_SPEED = 400;
-    private Vector2 windowDimensions;
-    private int minDistanceFromEdge;
-    private UserInputListener inputListener;
+    private final Vector2 windowDimensions;
+    private final int minDistanceFromEdge;
+    private final UserInputListener inputListener;
 
 
     /**
@@ -25,9 +26,12 @@ public class Paddle extends GameObject {
      *                      Note that (0,0) is the top-left corner of the window.
      * @param dimensions    Width and height in window coordinates.
      * @param renderable    The renderable representing the object. Can be null, in which case
-     * @param inputListener
+     * @param inputListener input listener
+     * @param windowDimensions window dimensions
+     * @param minDistanceFromEdge  border for paddle movement
      */
-    public Paddle(Vector2 topLeftCorner, Vector2 dimensions, Renderable renderable, UserInputListener inputListener,Vector2 windowDimensions,int minDistanceFromEdge) {
+    public Paddle(Vector2 topLeftCorner, Vector2 dimensions, Renderable renderable, UserInputListener inputListener,
+                  Vector2 windowDimensions,int minDistanceFromEdge) {
         super(topLeftCorner, dimensions, renderable);
         this.inputListener = inputListener;
         this.minDistanceFromEdge = minDistanceFromEdge;
@@ -43,6 +47,7 @@ public class Paddle extends GameObject {
         validatePaddleBoundaries();
     }
 
+    /* this method ensure that the paddle will stay in the game boundaries */
     private void validatePaddleBoundaries()
     {
         if ((minDistanceFromEdge > getTopLeftCorner().x()))
@@ -55,6 +60,7 @@ public class Paddle extends GameObject {
         }
     }
 
+    /* this method sets the movement direction of the paddle according to user keyboard input*/
     private Vector2 setMovementDirection(Vector2 movementDirection)
     {
         if (inputListener.isKeyPressed(KeyEvent.VK_LEFT))
